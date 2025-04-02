@@ -49,4 +49,5 @@ def main_page():
                 result_container.clear()
                 ui.timer(.5, process_click, once=True)
                 
-            ui.button('Submit', on_click=on_submit).classes('mt-4')
+            submit_str = get_localized_string('Check', get_understanding_language(), context="a button to check the correctness of a sentence by a student")
+            ui.button(submit_str, on_click=on_submit).classes('mt-4')

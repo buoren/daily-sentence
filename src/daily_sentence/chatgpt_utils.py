@@ -15,15 +15,20 @@ client = OpenAI(
     api_key=get_api_key()
 )
 
-def construct_translator_prompt(sentence: str, learning_language: str, understanding_language: str):
+def construct_translator_prompt(sentence: str, learning_language: str, understanding_language: str, context: str):
     sentence_pieces = re.split(r'\w+', sentence)
     if len(sentence_pieces) > 1:
         fragment = "sentence"
     else:
         fragment = "word"
 
+    if context:
+        context_str = f"using the context {context}, " 
+    else:
+        context_str = ""
+
     prompt = f"""
-    act as a translator.  translate the following {fragment} from {learning_language} to {understanding_language}, without any additional commentary:
+    act as a translator.  {context_str}translate the following {fragment} from {learning_language} to {understanding_language}, without any additional commentary:
 
     {sentence}
     """
@@ -69,12 +74,12 @@ def analyze_sentence(sentence: str, learning_language: str, understanding_langua
     prompt = construct_teacher_prompt(sentence, learning_language, understanding_language, construct_constraint_string(constraints))
     return get_completion(prompt)
 
-def get_translated_string(sentence: str, learning_language: str, understanding_language: str):
-    prompt = construct_translator_prompt(sentence, learning_language, understanding_language)
+def get_translated_string(sentence: str, learning_language: str, understanding_language: str, context: str):
+    prompt = construct_translator_prompt(sentence, learning_language, understanding_language, context)
     return get_completion(prompt)
 
 def get_localized_string(english_string: str, understanding_language: str):
     if understanding_language == "English":
         return english_string
     else:
-        return get_translated_string(english_string, get_learning_language(), understanding_language)
+        return get_translated_string(english_string, get_learning_language(), understanding_language, context="")
