@@ -5,4 +5,4 @@ import os
 port = os.environ.get('PORT', 8080)
 
 main_page()
-ui.run(host='0.0.0.0', port=port, title='Daily Sentence')
+ui.run(host='0.0.0.0', port=int(port), title='Daily Sentence')
