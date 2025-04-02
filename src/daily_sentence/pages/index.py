@@ -74,6 +74,8 @@ def main_page():
 
             def on_new_constraints():
                 nonlocal constraints, constraint_cards
+                result_container.clear()
+                user_input.clear()
                 constraints, constraint_cards = reconstitute_constraint_cards(constraint_cards)
 
             make_buttons()
