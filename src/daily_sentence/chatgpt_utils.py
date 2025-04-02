@@ -1,12 +1,15 @@
 from openai import OpenAI
 from language import get_learning_language, get_understanding_language
 import re
+import os
+
 def get_api_key():
-    try:
+
+    if os.path.exists('.chatgpt-key'):
         with open('.chatgpt-key', 'r') as file:
             return file.read().strip()
-    except FileNotFoundError:
-        raise Exception("Please create a .chatgpt-key file with your OpenAI API key")
+    else:
+        return os.environ['OPENAI_API_KEY']
 
 client = OpenAI(
     api_key=get_api_key()
