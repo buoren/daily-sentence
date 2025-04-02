@@ -32,11 +32,13 @@ CONSTRAINT_LIST = [
     # "something about a thought"
 ]
 
+language_selection = ("Dutch", "English")
+
 def get_learning_language():
-    return "French"
+    return language_selection[0]
 
 def get_understanding_language():
-    return "Dutch"
+    return language_selection[1]
 
 def get_constraints():
     return random.sample(CONSTRAINT_LIST, 3)
