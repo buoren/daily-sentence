@@ -45,7 +45,7 @@ def construct_teacher_prompt(sentence: str, learning_language: str, understandin
     And then a proper {learning_language} example sentence.
     And then a translation to {understanding_language} of the proper {learning_language} example.
     
-    Please use the following form for a response:
+    Please use the following form for a response, and include no other commentary:
 
     [boolean, "string", "string", "string", "string"]
 
