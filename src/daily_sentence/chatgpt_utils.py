@@ -78,7 +78,7 @@ def get_translated_string(sentence: str, learning_language: str, understanding_l
     prompt = construct_translator_prompt(sentence, learning_language, understanding_language, context)
     return get_completion(prompt)
 
-def get_localized_string(english_string: str, understanding_language: str, context: str):
+def get_localized_string(english_string: str, understanding_language: str, context: str = None):
     if understanding_language == "English":
         return english_string
     else:
