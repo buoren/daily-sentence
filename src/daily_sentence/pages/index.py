@@ -69,8 +69,8 @@ def main_page():
                 submit_str = get_localized_string('Check', get_understanding_language(), context="a button to check the correctness of a sentence by a student")
                 new_constraints_str = get_localized_string('New constraints', get_understanding_language(), context="a button to get three new constraints for the sentence by a student")
                 with ui.row().classes('w-full justify-center'):
-                    ui.button(new_constraints_str, on_click=on_new_constraints).classes('mt-4 bg-transparent')
-                    ui.button(submit_str, on_click=on_submit).classes('mt-4')
+                    ui.button(new_constraints_str, on_click=on_new_constraints).classes('mt-4 standard-button')
+                    ui.button(submit_str, on_click=on_submit).classes('mt-4 primary-button')
 
 
             def on_new_constraints():
