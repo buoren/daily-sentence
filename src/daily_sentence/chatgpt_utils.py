@@ -4,7 +4,6 @@ import re
 import os
 
 def get_api_key():
-
     if os.path.exists('.chatgpt-key'):
         with open('.chatgpt-key', 'r') as file:
             return file.read().strip()
@@ -15,12 +14,20 @@ client = OpenAI(
     api_key=get_api_key()
 )
 
+localization_cache = {
+    "Dutch": {
+        "English": "Engels",
+        "Dutch": "Nederlands",
+        "Chinese": "Chinees",
+        "French": "Frans",
+        "German": "Duits",
+        "Italian": "Italiaans",
+        "Portuguese": "Portugees",
+    },
+}
+
 def construct_translator_prompt(sentence: str, learning_language: str, understanding_language: str, context: str):
     sentence_pieces = re.split(r'\w+', sentence)
-    if len(sentence_pieces) > 1:
-        fragment = "sentence"
-    else:
-        fragment = "word"
 
     if context:
         context_str = f"using the context {context}, " 
@@ -28,10 +35,11 @@ def construct_translator_prompt(sentence: str, learning_language: str, understan
         context_str = ""
 
     prompt = f"""
-    act as a translator.  {context_str}translate the following {fragment} from {learning_language} to {understanding_language}, without any additional commentary:
+    act as a translator.  {context_str}translate the following sentence or word from {learning_language} to {understanding_language}, without any additional commentary:
 
     {sentence}
     """
+    print(prompt)
     return prompt
 
 def construct_teacher_prompt(sentence: str, learning_language: str, understanding_language: str, constraints: str):
@@ -82,4 +90,8 @@ def get_localized_string(english_string: str, understanding_language: str, conte
     if understanding_language == "English":
         return english_string
     else:
-        return get_translated_string(english_string, get_learning_language(), understanding_language, context)
+        if localization_cache.get(understanding_language) is None:
+            localization_cache[understanding_language] = {}
+        if localization_cache[understanding_language].get(english_string) is None:
+            localization_cache[understanding_language][english_string] = get_translated_string(english_string, "English", understanding_language, context)
+        return localization_cache[understanding_language][english_string]
