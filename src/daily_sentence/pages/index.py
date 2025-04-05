@@ -29,7 +29,7 @@ def reconstitute_constraint_cards(constraint_cards: list[ui.element]):
         constraint_cards[i-1].text = f"{i}. {constraint_text}"
     return new_constraints, constraint_cards
 
-def construct_language_card(language_function: Callable[[str, str], None]):
+def construct_language_card(main_card: ui.element, language_function: Callable[[str, str], None]):
     language_card = ui.card().classes('w-96 p-4 bg-white shadow-lg text-center')
     with language_card:
         languages = get_supported_languages()
@@ -45,12 +45,12 @@ def construct_language_card(language_function: Callable[[str, str], None]):
             language_cta = get_localized_string("I understand %s." % my_language, my_language)
             with ui.dropdown_button(language_cta, value=my_language, auto_close=True).classes('w-full'):
                 for language in languages:
+                    language_cta = get_localized_string("I understand %s." % language, language)
                     def make_handler(lang=language):
                         def handler():
                             language_function(f"{to_language}:{lang}")
-                            create_language_main_card.refresh()
                         return handler
-                    ui.item(translated_languages[language], on_click=make_handler())
+                    ui.item(language_cta, on_click=make_handler())
             
             to_language_cta = get_localized_string("I want to learn %s." % to_language, my_language)
             with ui.dropdown_button(to_language_cta, value=to_language, auto_close=True).classes('w-full'):
@@ -58,10 +58,8 @@ def construct_language_card(language_function: Callable[[str, str], None]):
                     def make_handler(lang=language):
                         def handler():
                             language_function(f"{lang}:{my_language}")
-                            create_language_main_card.refresh()
                         return handler
                     ui.item(translated_languages[language], on_click=make_handler())
-    print("created language card")
     return language_card
 
 def fill_main_card(main_card: ui.element):
@@ -101,7 +99,6 @@ def fill_main_card(main_card: ui.element):
             constraints, constraint_cards = reconstitute_constraint_cards(constraint_cards)
         
         make_buttons(on_submit, on_new_constraints)
-        print("filled main card")
 
 def make_buttons(on_submit: Callable[[], None], on_new_constraints: Callable[[], None]):
     submit_str = get_localized_string('Check', get_understanding_language(), context="a button to check the correctness of a sentence by a student")
@@ -109,24 +106,20 @@ def make_buttons(on_submit: Callable[[], None], on_new_constraints: Callable[[],
     with ui.row().classes('w-full justify-center'):
         ui.button(new_constraints_str, on_click=on_new_constraints).classes('mt-4 bg-secondary')
         ui.button(submit_str, on_click=on_submit).classes('mt-4 bg-primary')
-    print("made buttons")
-        
-def create_whole_page():
-    with ui.column().classes('w-full h-screen items-center justify-center'):
-        create_language_main_card()
 
 @ui.refreshable
 def create_language_main_card():
-    print("creating language main card")
     language_pair, local_set_language = ui.state(f"Dutch:English")
     learning_language, understanding_language = language_pair.split(":")
     set_learning_language(learning_language)
     set_understanding_language(understanding_language)
     main_card = ui.card().classes('w-96 p-4 bg-white shadow-lg text-center')
-    language_card = construct_language_card(local_set_language)
+    language_card = construct_language_card(main_card, local_set_language)
     fill_main_card(main_card)
-    print("created whole page")
 
+def create_whole_page():
+    with ui.column().classes('w-full h-screen items-center justify-center'):
+        create_language_main_card()
 
 def main_page():
     ui.add_head_html('<link href="https://unpkg.com/eva-icons@1.1.3/style/eva-icons.css" rel="stylesheet" />')

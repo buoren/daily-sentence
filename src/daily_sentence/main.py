@@ -1,7 +1,7 @@
 from nicegui import ui
 from daily_sentence.pages.index import main_page
 import os
-
+import asyncio
 port = os.environ.get('PORT', 8080)
 
 main_page()

@@ -35,13 +35,9 @@ CONSTRAINT_LIST = [
 language_selection = ("Dutch", "English")
 
 def get_learning_language():
-    print("getting learning language")
-    print(language_selection[0])
     return language_selection[0]
 
 def get_understanding_language():
-    print("getting understanding language")
-    print(language_selection[1])
     return language_selection[1]
 
 def set_understanding_language(language: str):

@@ -1,5 +1,5 @@
 from openai import OpenAI
-from language import get_learning_language, get_understanding_language
+from language import get_learning_language, get_understanding_language, get_supported_languages
 import re
 import os
 
@@ -26,7 +26,7 @@ localization_cache = {
     },
 }
 
-def construct_translator_prompt(sentence: str, learning_language: str, understanding_language: str, context: str):
+def as_translator(sentence: str, learning_language: str, understanding_language: str, context: str):
     sentence_pieces = re.split(r'\w+', sentence)
 
     if context:
@@ -40,7 +40,13 @@ def construct_translator_prompt(sentence: str, learning_language: str, understan
     {sentence}
     """
     print(prompt)
-    return prompt
+    return get_completion(prompt)
+
+def as_language_name(language_name: str, understanding_language: str):
+    prompt = f"""
+    what is the word {language_name} (language name) in {understanding_language} (without any additional commentary)?
+    """
+    return get_completion(prompt)
 
 def construct_teacher_prompt(sentence: str, learning_language: str, understanding_language: str, constraints: str):
     prompt = f"""
@@ -82,16 +88,14 @@ def analyze_sentence(sentence: str, learning_language: str, understanding_langua
     prompt = construct_teacher_prompt(sentence, learning_language, understanding_language, construct_constraint_string(constraints))
     return get_completion(prompt)
 
-def get_translated_string(sentence: str, learning_language: str, understanding_language: str, context: str):
-    prompt = construct_translator_prompt(sentence, learning_language, understanding_language, context)
-    return get_completion(prompt)
-
 def get_localized_string(english_string: str, understanding_language: str, context: str = None):
     if understanding_language == "English":
         return english_string
+    elif english_string in get_supported_languages():
+        return as_language_name(english_string, understanding_language)
     else:
         if localization_cache.get(understanding_language) is None:
             localization_cache[understanding_language] = {}
         if localization_cache[understanding_language].get(english_string) is None:
-            localization_cache[understanding_language][english_string] = get_translated_string(english_string, "English", understanding_language, context)
+            localization_cache[understanding_language][english_string] = as_translator(english_string, "English", understanding_language, context)
         return localization_cache[understanding_language][english_string]
