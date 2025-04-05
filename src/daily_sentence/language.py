@@ -32,22 +32,25 @@ CONSTRAINT_LIST = [
     "something about a thought"
 ]
 
-language_selection = ("Dutch", "English")
+class LanguageSelection:
 
-def get_learning_language():
-    return language_selection[0]
+    def __init__(self, learning_language: str, understanding_language: str):
+        self.learning_language = learning_language
+        self.understanding_language = understanding_language
 
-def get_understanding_language():
-    return language_selection[1]
+    def get_learning_language(self):
+        return self.learning_language
 
-def set_understanding_language(language: str):
-    global language_selection
-    language_selection = (get_learning_language(), language)
+    def get_understanding_language(self):
+        return self.understanding_language  
 
-def set_learning_language(language: str):
-    global language_selection
-    language_selection = (language, get_understanding_language())
+    def set_learning_language(self, learning_language: str):
+        self.learning_language = learning_language
 
+    def set_understanding_language(self, understanding_language: str):
+        self.understanding_language = understanding_language
+
+    
 def get_constraints():
     return random.sample(CONSTRAINT_LIST, 3)
 

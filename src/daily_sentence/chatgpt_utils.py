@@ -1,5 +1,5 @@
 from openai import OpenAI
-from language import get_learning_language, get_understanding_language, get_supported_languages
+from language import get_supported_languages
 import re
 import os
 
