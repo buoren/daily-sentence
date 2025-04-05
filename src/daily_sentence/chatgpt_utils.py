@@ -35,11 +35,10 @@ def as_translator(sentence: str, learning_language: str, understanding_language:
         context_str = ""
 
     prompt = f"""
-    act as a translator.  {context_str}translate the following sentence or word from {learning_language} to {understanding_language}, without any additional commentary:
-
+    act as a translator.  {context_str}translate the following phrase, sentence or word after the dashes from {learning_language} to {understanding_language}, without any additional commentary:
+    ----
     {sentence}
     """
-    print(prompt)
     return get_completion(prompt)
 
 def as_language_name(language_name: str, understanding_language: str):
@@ -68,7 +67,6 @@ def construct_teacher_prompt(sentence: str, learning_language: str, understandin
     {sentence}
     """
 
-    print(prompt)
     return prompt
     
 def get_completion(prompt: str):
