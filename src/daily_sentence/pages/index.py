@@ -121,6 +121,7 @@ def create_whole_page():
     with ui.column().classes('w-full h-screen items-center justify-center'):
         create_language_main_card()
 
+@ui.page('/')
 def main_page():
     ui.add_head_html('<link href="https://unpkg.com/eva-icons@1.1.3/style/eva-icons.css" rel="stylesheet" />')
     ui.query('body').classes('bg-sky-100')  # Light blue background for the whole page
