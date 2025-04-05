@@ -65,7 +65,7 @@ def get_supported_languages():
         # "Japanese",
         # "Korean",
         # "Vietnamese",
-        # "Arabic",
+        "Arabic",
         # "Turkish",
         # "Polish",
         # "Czech",
