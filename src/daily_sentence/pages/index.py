@@ -120,7 +120,7 @@ def create_language_main_card(language_selection: LanguageSelection):
 
 def create_whole_page():
     language_selection = LanguageSelection("Dutch", "English")
-    with ui.column().classes('w-full h-screen items-center justify-center'):
+    with ui.column().classes('w-full h-full items-center justify-center'):
         create_language_main_card(language_selection)
 
 @ui.page('/')
