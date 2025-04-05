@@ -25,11 +25,11 @@ CONSTRAINT_LIST = [
     "something about a person",
     # "something about the thing",
     "something about an animal",
-    # "something about the plant",
+    "something about the plant",
     # "something about an object",
     # "something about an activity",
     # "something about an emotion",
-    # "something about a thought"
+    "something about a thought"
 ]
 
 language_selection = ("Dutch", "English")
