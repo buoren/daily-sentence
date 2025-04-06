@@ -122,6 +122,9 @@ def create_whole_page():
     language_selection = LanguageSelection("Dutch", "English")
     with ui.column().classes('w-full h-full items-center justify-center'):
         create_language_main_card(language_selection)
+        with ui.row().classes('w-full justify-center'):
+            ui.label("Brought to you by ").classes('text-sm')
+            ui.link("https://buoren.net/", "Kevin Shiue").classes('text-sm')
 
 @ui.page('/')
 def main_page():
