@@ -124,7 +124,7 @@ def create_whole_page():
         create_language_main_card(language_selection)
         with ui.row().classes('w-full justify-center'):
             ui.label("Brought to you by ").classes('text-sm')
-            ui.link("https://buoren.net/", "Kevin Shiue").classes('text-sm')
+            ui.link("Kevin Shiue", "https://buoren.net").classes('text-sm')
 
 @ui.page('/')
 def main_page():
