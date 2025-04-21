@@ -1,11 +1,23 @@
 import random
 
+SUPPORTED_LANGUAGES = {
+    "English": "en",
+    "Dutch": "nl",
+    "French": "fr",
+    "German": "de",
+    "Spanish": "es",
+    "Italian": "it",
+    "Chinese": "zh",
+    "Japanese": "ja",
+    "Arabic": "ar",
+}
+
 CONSTRAINT_LIST = [
     # "inversion",
     # "separable verb",
     "noun",
     "adjective",
-    # "adverb phrase",
+    "adverb or adverb phrase",
     # "conjunction",
     # "preposition",
     "interjection",
@@ -27,7 +39,7 @@ CONSTRAINT_LIST = [
     "something about an animal",
     "something about the plant",
     # "something about an object",
-    # "something about an activity",
+    "something about an activity",
     # "something about an emotion",
     "something about a thought"
 ]
@@ -35,56 +47,40 @@ CONSTRAINT_LIST = [
 class LanguageSelection:
 
     def __init__(self, learning_language: str, understanding_language: str):
-        self.learning_language = learning_language
-        self.understanding_language = understanding_language
+        # Store both name and code
+        self.learning_language_name = learning_language
+        self.understanding_language_name = understanding_language
+        self.learning_language_code = SUPPORTED_LANGUAGES[learning_language]
+        self.understanding_language_code = SUPPORTED_LANGUAGES[understanding_language]
 
-    def get_learning_language(self):
-        return self.learning_language
+    def get_learning_language(self) -> str:
+        """Get display name of learning language"""
+        return self.learning_language_name
 
-    def get_understanding_language(self):
-        return self.understanding_language  
+    def get_understanding_language(self) -> str:
+        """Get display name of understanding language"""
+        return self.understanding_language_name
+
+    def get_learning_language_code(self) -> str:
+        """Get ISO code of learning language"""
+        return self.learning_language_code
+
+    def get_understanding_language_code(self) -> str:
+        """Get ISO code of understanding language"""
+        return self.understanding_language_code
 
     def set_learning_language(self, learning_language: str):
-        self.learning_language = learning_language
+        self.learning_language_name = learning_language
+        self.learning_language_code = SUPPORTED_LANGUAGES[learning_language]
 
     def set_understanding_language(self, understanding_language: str):
-        self.understanding_language = understanding_language
+        self.understanding_language_name = understanding_language
+        self.understanding_language_code = SUPPORTED_LANGUAGES[understanding_language]
 
     
 def get_constraints():
     return random.sample(CONSTRAINT_LIST, 3)
 
 def get_supported_languages():
-    return [
-        "English",
-        "Dutch",
-        "French",
-        "German",
-        "Spanish",
-        "Italian",
-        # "Portuguese",
-        # "Russian",
-        "Chinese",
-        "Japanese",
-        # "Korean",
-        # "Vietnamese",
-        "Arabic",
-        # "Turkish",
-        # "Polish",
-        # "Czech",
-        # "Hungarian",
-        # "Romanian",
-        # "Bulgarian",
-        # "Greek",
-        # "Hebrew",
-        # "Hindi",
-        # "Indonesian",
-        # "Malay",
-        # "Thai",
-        # "Klingon",
-        # "Elvish",
-        # "Dothraki",
-        # "Norse",
-        # "Old English",
-        # "Old French",
-    ]
+    """Get list of supported language names for UI and ChatGPT"""
+    return list(SUPPORTED_LANGUAGES.keys())

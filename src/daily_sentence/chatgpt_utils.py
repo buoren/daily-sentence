@@ -1,5 +1,7 @@
 from openai import OpenAI
-from language import get_supported_languages
+from language import get_supported_languages, SUPPORTED_LANGUAGES
+from translation_api import TranslationApiClient
+from nicegui import ui
 import re
 import os
 
@@ -14,6 +16,8 @@ client = OpenAI(
     api_key=get_api_key()
 )
 
+translation_api = TranslationApiClient()
+
 localization_cache = {
     "Dutch": {
         "English": "Engels",
@@ -22,13 +26,17 @@ localization_cache = {
         "French": "Frans",
         "German": "Duits",
         "Italian": "Italiaans",
-        "Portuguese": "Portugees",
     },
 }
 
-def as_translator(sentence: str, learning_language: str, understanding_language: str, context: str):
-    sentence_pieces = re.split(r'\w+', sentence)
+def show_error_dialog():
+    """Show error dialog with reload button"""
+    with ui.dialog() as dialog, ui.card():
+        ui.label('Failed to load translations. Please try again.')
+        with ui.row():
+            ui.button('Reload', on_click=lambda: (dialog.close(), ui.refresh()))
 
+def as_translator(sentence: str, learning_language: str, understanding_language: str, context: str):
     if context:
         context_str = f"using the context {context}, " 
     else:
@@ -66,9 +74,34 @@ def construct_teacher_prompt(sentence: str, learning_language: str, understandin
     
     {sentence}
     """
-
     return prompt
+
+def analyze_sentence(sentence: str, learning_language: str, understanding_language: str, constraints: list[str]):
+    prompt = construct_teacher_prompt(sentence, learning_language, understanding_language, construct_constraint_string(constraints))
+    return get_completion(prompt)
+
+def get_localized_string(english_string: str, understanding_language: str, context: str = None):
+    """Get localized UI strings using the Translation API as cache"""
+    if understanding_language == "English":
+        return english_string
     
+    if english_string in get_supported_languages():
+        context = " as a language name"
+
+    try:
+        result = translation_api.translate(
+            source_text=english_string,
+            source_language=SUPPORTED_LANGUAGES["English"],
+            target_language=SUPPORTED_LANGUAGES[understanding_language],
+            source_context=context
+        )
+        if result and 'result' in result:
+            return result['result']
+    except Exception as e:
+        print(f"Translation API failed: {e}")
+        show_error_dialog()
+        return english_string  # Fallback to English until reload
+
 def get_completion(prompt: str):
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -81,19 +114,3 @@ def get_completion(prompt: str):
 
 def construct_constraint_string(constraints: list[str]):
     return " and ".join(constraints)
-
-def analyze_sentence(sentence: str, learning_language: str, understanding_language: str, constraints: list[str]):
-    prompt = construct_teacher_prompt(sentence, learning_language, understanding_language, construct_constraint_string(constraints))
-    return get_completion(prompt)
-
-def get_localized_string(english_string: str, understanding_language: str, context: str = None):
-    if understanding_language == "English":
-        return english_string
-    elif english_string in get_supported_languages():
-        return as_language_name(english_string, understanding_language)
-    else:
-        if localization_cache.get(understanding_language) is None:
-            localization_cache[understanding_language] = {}
-        if localization_cache[understanding_language].get(english_string) is None:
-            localization_cache[understanding_language][english_string] = as_translator(english_string, "English", understanding_language, context)
-        return localization_cache[understanding_language][english_string]

@@ -71,7 +71,12 @@ def fill_main_card(main_card: ui.element, language_selection: LanguageSelection)
             result_container.classes('transition delay-150 duration-300 ease-in-out opacity-100')
             sentence = user_input.value
             user_input.clear()
-            chatgpt_response = analyze_sentence(sentence, language_selection.get_learning_language(), language_selection.get_understanding_language(), constraints)
+            chatgpt_response = analyze_sentence(
+                sentence,
+                language_selection.get_learning_language(),
+                language_selection.get_understanding_language(),
+                constraints
+            )
             chatgpt_response = chatgpt_response.replace('true', 'True').replace('false', 'False')
             (success, explanation, original, proper, proper_translated) = list(eval(chatgpt_response))
             with result_container:
