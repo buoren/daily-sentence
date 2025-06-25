@@ -1,11 +1,13 @@
 from nicegui import ui
 from daily_sentence.pages.base_page import BasePage
 from daily_sentence.language import get_constraints, LanguageSelection
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from daily_sentence.chatgpt_utils import analyze_sentence, get_localized_string
 from typing import List, Callable
+
+# Import functions with error handling
+try:
+    from daily_sentence.chatgpt_utils import analyze_sentence, get_localized_string
+except ImportError:
+    from ..chatgpt_utils import analyze_sentence, get_localized_string
 
 
 class DailyPracticePage(BasePage):
