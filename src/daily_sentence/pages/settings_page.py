@@ -1,10 +1,12 @@
 from nicegui import ui
 from daily_sentence.pages.base_page import BasePage
 from daily_sentence.language import LanguageSelection, get_supported_languages
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from daily_sentence.chatgpt_utils import get_localized_string
+
+# Import get_localized_string with error handling
+try:
+    from daily_sentence.chatgpt_utils import get_localized_string
+except ImportError:
+    from ..chatgpt_utils import get_localized_string
 
 
 class SettingsPage(BasePage):
