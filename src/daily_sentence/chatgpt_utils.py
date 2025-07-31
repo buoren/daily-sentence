@@ -1,4 +1,4 @@
-from openai import OpenAI
+from anthropic import Anthropic
 from language import get_supported_languages, SUPPORTED_LANGUAGES
 from translation_api import TranslationApiClient
 from nicegui import ui
@@ -6,13 +6,13 @@ import re
 import os
 
 def get_api_key():
-    if os.path.exists('.chatgpt-key'):
-        with open('.chatgpt-key', 'r') as file:
+    if os.path.exists('.claude-key'):
+        with open('.claude-key', 'r') as file:
             return file.read().strip()
     else:
-        return os.environ['OPENAI_API_KEY']
+        return os.environ['CLAUDE_API_KEY']
 
-client = OpenAI(
+client = Anthropic(
     api_key=get_api_key()
 )
 
@@ -103,14 +103,14 @@ def get_localized_string(english_string: str, understanding_language: str, conte
         return english_string  # Fallback to English until reload
 
 def get_completion(prompt: str):
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        store=False,
+    message = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1000,
         messages=[
             {"role": "user", "content": prompt}
         ]
     )
-    return completion.choices[0].message.content
+    return message.content[0].text
 
 def construct_constraint_string(constraints: list[str]):
     return " and ".join(constraints)
